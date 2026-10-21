@@ -203,13 +203,4 @@ cd frontend && npm run build
 
 ---
 
-## 9. Major Project Evaluation / Viva Guide
 
-When presenting this project to examiners or interviewers, highlight:
-1. **The Core Problem:** Most career portals just display job ads. CareerOS answers *"What specifically should I learn next?"* by identifying skill deltas between student portfolios and market requirements.
-2. **Architectural Separation:** Clean three-tier decoupled microservices. The Node.js gateway handles auth and data orchestration; Python handles deterministic NLP/ML; MySQL stores relational roadmaps and taxonomy; MongoDB stores rich document profiles.
-3. **Graceful Fallbacks:** If the Python microservice is offline, the Node.js backend seamlessly defaults to local deterministic heuristics without crashing or fabricating fake outputs.
-4. **Honest AI:** Transparent mathematical scoring instead of fabricated "99% ATS guaranteed" marketing claims.
-
-=======
-# Carrier_OS
