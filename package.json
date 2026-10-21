@@ -1,0 +1,16 @@
+{
+  "name": "careeros-ai",
+  "version": "1.0.0",
+  "description": "CareerOS AI — Your Personal Career Intelligence Platform",
+  "private": true,
+  "scripts": {
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:ai": "python -m uvicorn app.main:app --app-dir ai-service --host 127.0.0.1 --port 8000 --reload",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "seed": "cd backend && npm run prisma:seed",
+    "test:ai": "python ai-service/tests/test_ai_service.py"
+  }
+}
+

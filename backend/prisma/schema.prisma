@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Skill {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  category    String
+  aliases     String   @db.Text // JSON string array of aliases
+  targetProficiency Int @default(80)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
+
+model Role {
+  id              String   @id @default(uuid())
+  name            String   @unique
+  description     String   @db.Text
+  requiredSkills  String   @db.Text // JSON string array
+  preferredSkills String   @db.Text // JSON string array
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Job {
+  id              String           @id @default(uuid())
+  title           String
+  company         String
+  location        String           @default("Remote")
+  workMode        String           @default("Remote") // Remote, Hybrid, On-site
+  experienceLevel String           @default("Fresher / 0-2 yrs")
+  description     String           @db.Text
+  requiredSkills  String           @db.Text // JSON string array
+  preferredSkills String           @db.Text // JSON string array
+  sourceUrl       String           @db.Text
+  isDemoData      Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  applications    JobApplication[]
+}
+
+model JobApplication {
+  id          String   @id @default(uuid())
+  userId      String
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status      String   @default("Interested") // Interested, Planned, Applied, Interviewing, Offer, Rejected, Withdrawn
+  matchScore  Int      @default(0)
+  appliedDate DateTime?
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([jobId])
+}
+
+model Roadmap {
+  id                String        @id @default(uuid())
+  userId            String        @unique
+  targetRole        String
+  timelineWeeks     Int           @default(6)
+  totalPlannedHours Int           @default(90)
+  summaryAdvice     String        @db.Text
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  weeks             RoadmapWeek[]
+
+  @@index([userId])
+}
+
+model RoadmapWeek {
+  id          String        @id @default(uuid())
+  roadmapId   String
+  roadmap     Roadmap       @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  weekNumber  Int
+  focusTheme  String
+  totalHours  Int
+  createdAt   DateTime      @default(now())
+  tasks       RoadmapTask[]
+
+  @@index([roadmapId])
+}
+
+model RoadmapTask {
+  id            String      @id @default(uuid())
+  weekId        String
+  week          RoadmapWeek @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  title         String
+  description   String      @db.Text
+  relatedSkill  String
+  category      String
+  priority      String      @default("medium") // high, medium, low
+  estimatedHours Int        @default(5)
+  resourceTitle String
+  resourceUrl   String      @db.Text
+  resourceType  String      @default("Docs") // Docs, Hands-on Project, Practice, Video
+  isCompleted   Boolean     @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([weekId])
+}
+
+model DSAProblem {
+  id                  String   @id @default(uuid())
+  userId              String
+  title               String
+  topic               String   // Arrays, Strings, Linked Lists, Stacks, Queues, Hashing, Binary Search, Trees, Graphs, Recursion, Backtracking, Greedy, DP, Heaps, Tries
+  difficulty          String   // Easy, Medium, Hard
+  sourceUrl           String?  @db.Text
+  programmingLanguage String   @default("C++")
+  attemptCount        Int      @default(1)
+  status              String   @default("Solved") // Solved, Attempted, Revisiting
+  timeSpentMinutes    Int      @default(30)
+  confidenceRating    Int      @default(4) // 1 to 5
+  notes               String?  @db.Text
+  dateAttempted       DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([userId])
+  @@index([topic])
+  @@index([difficulty])
+  @@index([status])
+}
+
+model LearningResource {
+  id                String             @id @default(uuid())
+  title             String
+  skill             String
+  resourceType      String             // Docs, Course, Tutorial, Practice
+  difficulty        String             // Beginner, Intermediate, Advanced
+  estimatedDuration String             // e.g. "4 hours", "2 weeks"
+  provider          String             // e.g. "MDN", "freeCodeCamp", "Official Docs", "NeetCode"
+  url               String             @db.Text
+  isFree            Boolean            @default(true)
+  verificationDate  String             @default("2026-10-18")
+  createdAt         DateTime           @default(now())
+  bookmarks         ResourceBookmark[]
+
+  @@index([skill])
+}
+
+model ResourceBookmark {
+  id         String           @id @default(uuid())
+  userId     String
+  resourceId String
+  resource   LearningResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  notes      String?          @db.Text
+  createdAt  DateTime         @default(now())
+
+  @@index([userId])
+  @@index([resourceId])
+}
+
