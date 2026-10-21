@@ -211,3 +211,5 @@ When presenting this project to examiners or interviewers, highlight:
 3. **Graceful Fallbacks:** If the Python microservice is offline, the Node.js backend seamlessly defaults to local deterministic heuristics without crashing or fabricating fake outputs.
 4. **Honest AI:** Transparent mathematical scoring instead of fabricated "99% ATS guaranteed" marketing claims.
 
+=======
+# Carrier_OS
